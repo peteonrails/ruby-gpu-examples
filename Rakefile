@@ -14,7 +14,7 @@ Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "ruby-gpu-examples"
   gem.homepage = "http://github.com/preston/ruby-gpu-examples"
-  gem.license = "MIT"
+  gem.license = "Apache 2.0"
   gem.summary = %Q{Example scripts for GPU programming using Ruby.}
   gem.description = %Q{A collection of Ruby scripts demonstrating how to write and run multi-threaded Single Instruction Multiple Data (SIMD) programs using popular libraries. Originally presented at MountainWest Ruby Conf 2011 by Preston Lee.}
   gem.email = "conmotto@gmail.com"

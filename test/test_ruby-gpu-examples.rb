@@ -1,7 +1,13 @@
 require 'helper'
 
 class TestRubyGpuExamples < Test::Unit::TestCase
-  should "probably rename this file and start testing for real" do
-    flunk "hey buddy, you should probably rename this file and start testing for real"
-  end
+
+	should "load barracuda gem correctly" do
+		begin
+			require 'barracuda'
+		rescue
+			flunk "library failed to load"
+		end
+	end
+	
 end
