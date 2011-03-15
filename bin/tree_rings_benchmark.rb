@@ -13,9 +13,10 @@ require	'ruby-gpu-examples'
 require 'barracuda'
 require 'benchmark'
 
+include Barracuda
 
 
-RINGS = 1e3.to_i
+RINGS = 1e8.to_i
 
 
 
@@ -29,30 +30,37 @@ end
 
 def ring_job(rings, offset)
 	last = offset + rings - 1
-	puts "Computing rings #{offset} - #{last}."
+	# puts "Computing rings #{offset} - #{last}."
 	(offset..(last)).each do |radius|
 		ring_area(radius)
 	end
 end
 
 
-prog = Barracuda::Program.new <<EOF
-#define PI 3.141592653
-
-  __kernel void ring_area(__global float4 * output) {
+prog = Barracuda::Program.new
+prog.compile <<EOF
+	#define PI 3.141592653
+  __kernel void ring_area(__global float * output) {
     int i = get_global_id(0);
-    output[i] = (PI * i * i) - (PI * (i - 1) * (i - 1));		
+    output[i] = (PI * i * i) - (PI * (i - 1) * (i - 1));	
+		// output[i] = 3.2;
   }
 EOF
 
+
 puts "Rings: #{RINGS}. Yay!"
 
+output = []
+
+
+
 Benchmark.bm do |x|
-	# x.report("CPU (Serial)\t") {
-	# 	(1..RINGS).each do |i|
-	# 		ring_area(i)
-	# 	end
-	# }
+	
+	x.report("CPU (Serial)\t") {
+		(1..RINGS).each do |i|
+			ring_area(i)
+		end
+	}
 	
 	x.report("CPU (#{NUM_THREADS} Threads)\t") {
 		# puts "Running #{rings} worker threads..."
@@ -65,17 +73,17 @@ Benchmark.bm do |x|
 				ring_job(num, offset)
 			end
 		end
-		# Thread.new
-
+		
 		# puts "Making sure every thread is done..."
 		threads.each do |t| t.join end
-		
 	}
-	x.report('GPU') {
+	
+	x.report("GPU\t\t") {
 		output = Barracuda::Buffer.new(RINGS).to_type(:float)
-		puts prog.ring_area(output, :times => RINGS)
+		prog.ring_area(output, :times => RINGS)
+		# puts "Done!"
 	}
 end
 
+# puts output
 
-puts "Done!"
