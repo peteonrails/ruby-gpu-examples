@@ -4,8 +4,8 @@
 __global__ void kernel(int N, float *g_result){
   	int n = threadIdx.x + blockDim.x * blockIdx.x;
   	/* compute area - rings start at 1 */
-    //g_result[n] = ((float)M_PI*(n+1)*(n+1)) - ((float)M_PI*n*n);
-	g_result[n] = n+1;
+    g_result[n] = ((float)M_PI*(n+1)*(n+1)) - ((float)M_PI*n*n);
+	//g_result[n] = n+1;
 }
 
 /* only use extern if calling code is C */

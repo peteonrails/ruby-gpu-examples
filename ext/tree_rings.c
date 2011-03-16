@@ -16,7 +16,7 @@
 
 #include "tree_rings.h"
 
-#define DEFAULT_RINGS 8192	//currently only works on powers of 2
+#define DEFAULT_RINGS 1000000000	//currently only works on powers of 2
 #define NUM_THREADS 8
 #define DEBUG 0
 
@@ -38,8 +38,8 @@ int main(int argc, const char * argv[]) {
 		
 	struct timeval start, stop, diff;	
 
-	//printf("\nArea 0 = %f\n", M_PI*pow(DEFAULT_RINGS, 2));
-	printf("\nSum 0 = %f\n", (pow(DEFAULT_RINGS, 2)+DEFAULT_RINGS)/2);
+	printf("\nArea 0 = %f\n", M_PI*pow(DEFAULT_RINGS, 2));
+	//printf("\nSum 0 = %f\n", (pow(DEFAULT_RINGS, 2)+DEFAULT_RINGS)/2);
 		
 	printf("\nRunning serial calculation using CPU...\t\t\t");
 	gettimeofday(&start, NULL);
@@ -83,9 +83,9 @@ void calculate_ring_areas_in_serial_with_offset(int rings, int thread) {
 	int max = rings + offset;
 	float a = 0;
 	for(i = offset+1; i < max+1; i++) {
-		//a = (M_PI * pow(i, 2)) - (M_PI * pow(i - 1, 2));
-		//res += a;
-		res += i;
+		a = (M_PI * pow(i, 2)) - (M_PI * pow(i - 1, 2));
+		res += a;
+		//res += i;
 	}
 }
 
