@@ -15,6 +15,7 @@ typedef struct {
 void calculate_ring_areas_in_serial(int rings);
 void calculate_ring_areas_in_serial_with_offset(int rings, int thread);
 void calculate_ring_areas_in_parallel(int rings);
+void calculate_ring_areas_on_GPU();
 void ring_job(ring_thread_data * data);
 
 /* From: http://www.gnu.org/software/libtool/manual/libc/Elapsed-Time.html

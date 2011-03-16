@@ -81,4 +81,5 @@ print("Running parallel calculation using GPU...\t\t")
 start = Time.now
 output = Barracuda::Buffer.new(RINGS).to_type(:float)
 prog.ring_area(output, :times => RINGS)
-printf("%06f seconds\n", Time.now-start)
+printf("%06f seconds\n\n", Time.now-start)
+puts("Done!\n\n")
