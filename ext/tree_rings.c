@@ -16,14 +16,13 @@
 
 #include "tree_rings.h"
 
-#define DEFAULT_RINGS 1000000000	//currently only works on powers of 2
+#define DEFAULT_RINGS pow(2,25)	//currently only works on powers of 2
 #define NUM_THREADS 8
 #define DEBUG 0
 
-float res = 0;
+//float res = 0;
 
 int main(int argc, const char * argv[]) {
-	printf("k1");
 	int rings = DEFAULT_RINGS;
 
 	if(argc > 1) {
@@ -38,8 +37,7 @@ int main(int argc, const char * argv[]) {
 		
 	struct timeval start, stop, diff;	
 
-	printf("\nArea 0 = %f\n", M_PI*pow(DEFAULT_RINGS, 2));
-	//printf("\nSum 0 = %f\n", (pow(DEFAULT_RINGS, 2)+DEFAULT_RINGS)/2);
+	//printf("\nArea 0 = %f\n", M_PI*pow(DEFAULT_RINGS, 2));
 		
 	printf("\nRunning serial calculation using CPU...\t\t\t");
 	gettimeofday(&start, NULL);
@@ -47,8 +45,8 @@ int main(int argc, const char * argv[]) {
 	gettimeofday(&stop, NULL);
 	timeval_subtract(&diff, &stop, &start);
 	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
-	printf("Area 1 = %f\n", res);
-	res = 0;
+	//printf("Area 1 = %f\n", res);
+	//res = 0;
 	
 	printf("Running parallel calculation using %i CPU threads...\t", NUM_THREADS);
 	gettimeofday(&start, NULL);
@@ -56,8 +54,8 @@ int main(int argc, const char * argv[]) {
 	gettimeofday(&stop, NULL);
 	timeval_subtract(&diff, &stop, &start);
 	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
-	printf("Area 2 = %f\n", res);
-	res = 0;
+	//printf("Area 2 = %f\n", res);
+	//res = 0;
 
 	printf("Running parallel calculation using GPU...\t\t");
 	gettimeofday(&start, NULL);
@@ -65,7 +63,7 @@ int main(int argc, const char * argv[]) {
 	gettimeofday(&stop, NULL);
 	timeval_subtract(&diff, &stop, &start);
 	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
-	printf("Area 3 = %f\n", res);
+	//printf("Area 3 = %f\n", res);
 	
 	printf("\nDone!\n\n");	
 	return EXIT_SUCCESS;
@@ -84,8 +82,7 @@ void calculate_ring_areas_in_serial_with_offset(int rings, int thread) {
 	float a = 0;
 	for(i = offset+1; i < max+1; i++) {
 		a = (M_PI * pow(i, 2)) - (M_PI * pow(i - 1, 2));
-		res += a;
-		//res += i;
+		//res += a;
 	}
 }
 
@@ -131,8 +128,7 @@ void calculate_ring_areas_on_GPU(){
 	/* pointer to host array */
 	float *h_array;
 	/* pointer to gpu device array */
-	//float *g_array1, *g_array2;
-	float *g_array2;
+	float *g_array;
 
  	/* find number of device in current "context" */
 	cudaGetDevice(&devid);
@@ -144,28 +140,17 @@ void calculate_ring_areas_on_GPU(){
 	cudaMallocHost((void**) &h_array, N*sizeof(float));
 
 	/* allocate arrays on device (via CUDA) */
-	//cudaMalloc((void**) &g_array1, N*sizeof(float));
-	cudaMalloc((void**) &g_array2, N*sizeof(float));
-
-	/* fill up the host array */
-	//for(n=0;n<N;++n)
-		//h_array[n] = 0;
-
- 	/* copy from host array to device array */
-	//cudaMemcpy(g_array1, h_array, N*sizeof(float), cudaMemcpyHostToDevice);
+	cudaMalloc((void**) &g_array, N*sizeof(float));
 
 	/* invoke kernel on device */
-	//void cudakernel(int N, float *g_data, float *g_result);
 	void cudakernel(int N, float *g_result);
-	//cudakernel(N, g_array1, g_array2);
-	cudakernel(N, g_array2);
+	cudakernel(N, g_array);
 
 	/* copy from device array to host array */
-	cudaMemcpy(h_array, g_array2, N*sizeof(float), cudaMemcpyDeviceToHost);
+	cudaMemcpy(h_array, g_array, N*sizeof(float), cudaMemcpyDeviceToHost);
 	
-	int i;
-	for(i=0;i<N;i++){
-		//printf("\nRing %d = %f\n", i+1, h_array[i]);
-		res += h_array[i];
-	}		
+	//int i;
+	//for(i=0;i<N;i++){
+	//	res += h_array[i];
+	//}		
 }

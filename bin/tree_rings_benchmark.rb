@@ -15,7 +15,7 @@ require 'barracuda'
 
 include Barracuda
 
-RINGS = 1000000.to_i
+RINGS = 2**25.to_i
 
 NUM_THREADS = 8
 threads = []
