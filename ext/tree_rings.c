@@ -1,5 +1,7 @@
 /*
    A baseline CPU-based benchmark program CPU/GPU performance comparision.
+   Approximates the cross-sectional area of every tree ring in a tree trunk in serial and in parallel
+   by taking the total area at a given radius and subtracting the area of the closest inner ring.
    Copyright © 2011 Preston Lee. All rights reserved.
    http://prestonlee.com 
 */
@@ -12,12 +14,12 @@
 
 #include "tree_rings.h"
 
-#define DEFAULT_RINGS 1000000000
+#define DEFAULT_RINGS 1000000
 #define NUM_THREADS 8
 #define DEBUG 0
 
-/*  Calculates the area between each pair of consecutive rings in a tree
- 	in serial, and then in parallel on NUM_THREADS threads */
+int acc = 0;
+
 int main(int argc, const char * argv[]) {
 	int rings = DEFAULT_RINGS;
 
@@ -38,21 +40,20 @@ int main(int argc, const char * argv[]) {
 	calculate_ring_areas_in_serial(rings);
 	gettimeofday(&stop, NULL);
 	timeval_subtract(&diff, &stop, &start);
-	printf(" (%ld seconds, %ld microseconds)\n", (long)diff.tv_sec, (long)diff.tv_usec);
+	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
 	
 	printf("Running parallel calculation using %i CPU threads...\t", NUM_THREADS);
 	gettimeofday(&start, NULL);
 	calculate_ring_areas_in_parallel(rings);
 	gettimeofday(&stop, NULL);
 	timeval_subtract(&diff, &stop, &start);
-	printf(" (%ld seconds, %ld microseconds)\n", (long)diff.tv_sec, (long)diff.tv_usec);
+	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
 	
-
 	printf("\nDone!");	
 	return EXIT_SUCCESS;
 }
 
-/*  Calculates the area between each pair of consecutive rings in a tree
+/*  Approximate the cross-sectional area between each pair of consecutive tree rings
  	in serial */
 void calculate_ring_areas_in_serial(int rings) {
 		calculate_ring_areas_in_serial_with_offset(rings, 0);
@@ -68,7 +69,7 @@ void calculate_ring_areas_in_serial_with_offset(int rings, int thread) {
 	}
 }
 
-/*  Calculates the area between each pair of consecutive rings in a tree
+/*  Approximate the cross-sectional area between each pair of consecutive tree rings
  	in parallel on NUM_THREADS threads */
 void calculate_ring_areas_in_parallel(int rings) {	
 	pthread_t threads[NUM_THREADS];
@@ -80,7 +81,7 @@ void calculate_ring_areas_in_parallel(int rings) {
 	for(t = 0; t < NUM_THREADS; t++){
 		data[t].rings = rings_per_thread;
 		data[t].number = t;
-	    rc = pthread_create(&threads[t], NULL, (void *) ring_job, (void *)&data[t]);
+	    rc = pthread_create(&threads[t], NULL, (void *) ring_job, (void *) &data[t]);
 	    if (rc){
 	      printf("ERROR; return code from pthread_create() is %d\n", rc);
 	      exit(-1);

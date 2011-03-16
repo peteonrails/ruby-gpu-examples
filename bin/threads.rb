@@ -3,7 +3,7 @@
 # A brief demonstration of the inherent problem of running multiple threads
 # on modern SMP (Semetric Multi-Processing, aka multi-core) machines.
 #
-# This will only native threads in Ruby 1.9, but only run on one CPU core
+# This will use native threads in Ruby 1.9, but only run on one CPU core
 # due to the stupid Global Interpreter Lock (GIL). Use a tool such as
 # Activity Monitor.app (OS X), `top' (Linux) or Task Manager (Windows)
 # to see the CPU usage of this script during execution.
