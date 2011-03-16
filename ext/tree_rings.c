@@ -27,7 +27,7 @@ int main(int argc, const char * argv[]) {
 		rings = atoi(argv[1]);
 	}
 	
-	printf("A baseline CPU-based benchmark program for CPU/GPU performance comparision.\n");
+	printf("\nA baseline CPU-based benchmark program for CPU/GPU performance comparision.\n");
 	printf("Copyright © 2011 Preston Lee. All rights reserved.\n\n");
 	printf("\tUsage: %s [NUM TREE RINGS]\n\n", argv[0]);
 	
@@ -49,7 +49,7 @@ int main(int argc, const char * argv[]) {
 	timeval_subtract(&diff, &stop, &start);
 	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
 	
-	printf("\nDone!");	
+	printf("\nDone!\n\n");	
 	return EXIT_SUCCESS;
 }
 
