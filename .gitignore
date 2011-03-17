@@ -16,7 +16,10 @@ pkg
 
 # C artifacts
 *.c.out
+*.o
+Makefile
 ext/tree_rings
+ext/alloc
 
 # Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
 #
