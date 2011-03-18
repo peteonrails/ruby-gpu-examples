@@ -8,10 +8,12 @@ If you have Ruby GPU computing examples to share, please consider forking this p
 
 == Dependencies
 
-To run all the examples at present, you’ll need:
+To run all the examples at present, you’ll need, probably in this order:
 
+* Ruby 1.9
 * The NVIDIA development driver and toolkit. http://developer.nvidia.com/object/gpucomputing.html
- Ruby 1.9, the “barracuda” gem, and JRuby (without the barracuda gem) on a multi-core OS X Snow Leopard system.
+* The "barracuda" gem. (Only for OS X Snow Leopard, according to the documentation.)
+* JRuby 1.6 (without the barracuda gem).
 This takes time to set up, so maybe just chillax for now?
 
 == Compiling
@@ -20,13 +22,14 @@ FIXME make extconf.rb happy! You cannot simple "make" at the moment.
 
 * cd ext
 * nvcc tree_rings.c kernel.cu -o tree_rings -m64
+* Run via ./tree_rings
 
 
 == Executing
 
-* bin/tree_rings_yarv.rb
-* bin/tree_rings_jruby.rb
-* ext/tree_rings
+* bin/tree_rings_yarv.rb (via ruby 1.9)
+* bin/tree_rings_jruby.rb (via jruby 1.6)
+* ./ext/tree_rings 
 
 = Copyright
 

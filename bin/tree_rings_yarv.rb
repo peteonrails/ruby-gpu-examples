@@ -12,13 +12,13 @@ $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require	'ruby-gpu-examples'
 require	'ruby-gpu-examples/barracuda'
 
-rings = 2**25.to_i
+rings = 2**24.to_i
 num_threads = 4
 
 printBanner(rings)
 
 runCPUSingleThreaded(rings)
 runCPUMultiThreaded(rings, num_threads)
-runGPU(rings)
+# runGPU(rings)
 
 puts("Done!\n\n")

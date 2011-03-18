@@ -16,11 +16,11 @@
 
 #include "tree_rings.h"
 
-#define DEFAULT_RINGS pow(2,25)	//currently only works on powers of 2
+#define DEFAULT_RINGS pow(2,24)	//currently only works on powers of 2
+#define MAX_CHUNK pow(2,22)
 #define NUM_THREADS 8
 #define DEBUG 0
 
-//float res = 0;
 
 int main(int argc, const char * argv[]) {
 	int rings = DEFAULT_RINGS;
@@ -58,11 +58,11 @@ int main(int argc, const char * argv[]) {
 	//res = 0;
 
 	printf("Running parallel calculation using GPU...\t\t");
-	gettimeofday(&start, NULL);
-	calculate_ring_areas_on_GPU();
-	gettimeofday(&stop, NULL);
-	timeval_subtract(&diff, &stop, &start);
-	printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
+	// gettimeofday(&start, NULL);
+	// calculate_ring_areas_on_GPU();
+	// gettimeofday(&stop, NULL);
+	// timeval_subtract(&diff, &stop, &start);
+	// printf("%ld.%06ld seconds\n", (long)diff.tv_sec, (long)diff.tv_usec);
 	//printf("Area 3 = %f\n", res);
 	
 	printf("\nDone!\n\n");	
@@ -118,13 +118,13 @@ void ring_job(ring_thread_data * data) {
  	in parallel on a GPU */
 void calculate_ring_areas_on_GPU(){
 	/* registers */
-  	int n;
+ 	int n;
 	/* device ID */
 	int devid;
   	/* device count */
 	int devcount;
 	/* number of entries in arrays */
-	int N = DEFAULT_RINGS;
+	int N = MAX_CHUNK;
 	/* pointer to host array */
 	float *h_array;
 	/* pointer to gpu device array */
@@ -143,11 +143,19 @@ void calculate_ring_areas_on_GPU(){
 	cudaMalloc((void**) &g_array, N*sizeof(float));
 
 	/* invoke kernel on device */
-	void cudakernel(int N, float *g_result);
-	cudakernel(N, g_array);
+	// void cudakernel(int N, float *g_result);
+	int i;
+	int chunks = DEFAULT_RINGS / MAX_CHUNK;
+	for(i = 0; i < chunks; ++i)
+	{
+		cudakernel(N, g_array);
+		/* copy from device array to host array */
+		cudaMemcpy(h_array, g_array, N*sizeof(float), cudaMemcpyDeviceToHost);
+	}
 
-	/* copy from device array to host array */
-	cudaMemcpy(h_array, g_array, N*sizeof(float), cudaMemcpyDeviceToHost);
+	
+	cudaFree(h_array);
+	cudaFree(g_array);
 	
 	//int i;
 	//for(i=0;i<N;i++){

@@ -13,7 +13,7 @@ $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require	'ruby-gpu-examples'
 
-rings = 2**25.to_i
+rings = 2**24.to_i
 num_threads = 4
 
 printBanner(rings)
